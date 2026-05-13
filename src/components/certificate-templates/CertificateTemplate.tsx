@@ -33,7 +33,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
         ref={ref}
         style={{
           width: '210mm',
-          height: '260mm',
+          height: '297mm',
           position: 'relative',
           boxSizing: 'border-box',
           overflow: 'hidden',
@@ -53,7 +53,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
         <div
           style={{
             position: 'absolute',
-            inset: '12px',
+            inset: '20px',
             border: '2px solid #6bc8dc',
             boxSizing: 'border-box',
             pointerEvents: 'none',
@@ -65,10 +65,10 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
         <div
           style={{
             position: 'absolute',
-            top: '22px',
+            top: '45px',
             left: '22px',
             right: '22px',
-            bottom: '22px',
+            bottom: '25px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -80,7 +80,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
             src="/logos/2.png"
             alt="IOSH Crest"
             style={{
-              height: '230px',
+              height: '200px',
               objectFit: 'contain',
               display: 'block',
               marginTop: '6px',
@@ -88,14 +88,14 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           />
 
           {/* "This is a certificate awarded to" */}
-          <p style={{ margin: '24px 0 0', fontSize: '16px', textAlign: 'center', lineHeight: 1.5 }}>
+          <p style={{ margin: '10px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.5 }}>
             This is a certificate awarded to
           </p>
 
           {/* Recipient Name */}
           <p
             style={{
-              margin: '8px 0 0',
+              margin: '20px 0 0',
               fontSize: '32px',
               fontWeight: 'bold',
               textAlign: 'center',
@@ -108,14 +108,14 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           </p>
 
           {/* "on successfully completing" */}
-          <p style={{ margin: '20px 0 0', fontSize: '16px', textAlign: 'center', lineHeight: 1.5 }}>
+          <p style={{ margin: '20px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.5 }}>
             on successfully completing
           </p>
 
           {/* Course Name */}
           <p
             style={{
-              margin: '8px 0 0',
+              margin: '20px 0 0',
               fontSize: '30px',
               fontWeight: 'bold',
               textAlign: 'center',
@@ -128,14 +128,14 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           </p>
 
           {/* "a course approved and validated by the" */}
-          <p style={{ margin: '20px 0 0', fontSize: '16px', textAlign: 'center', lineHeight: 1.5 }}>
+          <p style={{ margin: '20px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.5 }}>
             a course approved and validated by the
           </p>
 
           {/* Institution name */}
           <p
             style={{
-              margin: '8px 0 0',
+              margin: '20px 0 0',
               fontSize: '22px',
               fontWeight: 'bold',
               textAlign: 'center',
@@ -147,19 +147,19 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           </p>
 
           {/* "in association with" */}
-          <p style={{ margin: '20px 0 0', fontSize: '16px', textAlign: 'center', lineHeight: 1.5 }}>
+          <p style={{ margin: '20px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.5 }}>
             in association with
           </p>
 
           {/* Kaspar line */}
-          <p style={{ margin: '8px 0 0', fontSize: '16px', textAlign: 'center', lineHeight: 1.4 }}>
+          <p style={{ margin: '20px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.4 }}>
             Kaspar International Training Services Private Ltd
           </p>
 
           {/* Approved Centre */}
           <p
             style={{
-              margin: '3px 0 0',
+              margin: '1px 0 0',
               fontSize: '14px',
               fontWeight: 'bold',
               fontStyle: 'italic',
@@ -170,9 +170,9 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           </p>
 
           {/* ── Signature block: IOSH logo LEFT | signatures CENTERED in remaining space ── */}
-          <div
+                <div
             style={{
-              marginTop: '22px',
+              marginTop: '30px',
               width: '100%',
               display: 'flex',
               alignItems: 'flex-start',
@@ -187,7 +187,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
                 display: 'flex',
                 justifyContent: 'flex-start',
                 alignItems: 'center',
-                paddingTop: '36px',
+                paddingTop: '150px',
               }}
             >
               <img
@@ -198,48 +198,86 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
             </div>
 
             {/* Center: fully centered signature block */}
-            <div
-              style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              <p style={{ margin: '0', fontSize: '14px', textAlign: 'center', lineHeight: 1.5 }}>
-                Signed on behalf of IOSH
-              </p>
+      {/* Center: fully centered signature block */}
+<div
+  style={{
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 0,
+    margin: 0,
+    padding: 0,
+    lineHeight: 0,   // ← kills inline line-box gaps
+  }}
+>
+  <p
+    style={{
+      margin: 0,
+      padding: 0,
+      fontSize: '16px',
+      textAlign: 'center',
+      lineHeight: 1,
+      display: 'block',
+    }}
+  >
+    Signed on behalf of IOSH
+  </p>
 
-              {/* Chief Executive Signature */}
-              <img
-                src="/logos/5.png"
-                alt="Chief Executive Signature"
-                style={{
-                  height: '120px',
-                  objectFit: 'contain',
-                  marginTop: '0px',
-                  display: 'block',
-                }}
-              />
-              <p style={{ margin: '0px 0 0', fontSize: '14px', textAlign: 'center' }}>
-                Chief Executive
-              </p>
+  <img
+    src="/logos/5.png"
+    alt="Chief Executive Signature"
+    style={{
+      height: '150px',
+      display: 'block',       // ← removes inline baseline gap
+      objectFit: 'contain',
+      margin: '-45px 0',      // ← eat the PNG's internal whitespace top+bottom
+      padding: 0,
+    }}
+  />
 
-              {/* Course Organiser Signature */}
-              <img
-                src="/logos/4.png"
-                alt="Course Organiser Signature"
-                style={{
-                  height: '120px',
-                  objectFit: 'contain',
-                  marginTop: '0px',
-                  display: 'block',
-                }}
-              />
-              <p style={{ margin: '0px 0 0', fontSize: '14px', textAlign: 'center' }}>
-                Course Organiser
-              </p>
-            </div>
+  <p
+    style={{
+      margin: 0,
+      padding: 0,
+      fontSize: '14px',
+      textAlign: 'center',
+      lineHeight: 1,
+      display: 'block',
+      position: 'relative',
+      zIndex: 1,
+    }}
+  >
+    Chief Executive
+  </p>
+
+  <img
+    src="/logos/4.png"
+    alt="Course Organiser Signature"
+    style={{
+      height: '150px',
+      display: 'block',       // ← removes inline baseline gap
+      objectFit: 'contain',
+      margin: '-25px 0',      // ← eat the PNG's internal whitespace top+bottom
+      padding: 0,
+    }}
+  />
+
+  <p
+    style={{
+      margin: 0,
+      padding: 0,
+      fontSize: '14px',
+      textAlign: 'center',
+      lineHeight: 1,
+      display: 'block',
+      position: 'relative',
+      zIndex: 1,
+    }}
+  >
+    Course Organiser
+  </p>
+</div>
 
             {/* Right spacer to balance the IOSH logo on the left */}
             <div style={{ width: '105px', flexShrink: 0 }} />
@@ -253,7 +291,9 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
               display: 'flex',
               alignItems: 'flex-end',
               justifyContent: 'space-between',
-              paddingBottom: '4px',
+              paddingBottom: '24px',
+              paddingLeft: '16px',
+              paddingRight: '16px',
               boxSizing: 'border-box',
             }}
           >
@@ -279,7 +319,8 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: 'white',
+                  backgroundColor: 'transparent',
+                  mixBlendMode: 'multiply',
                 }}
               >
                 <QRCode
@@ -288,6 +329,8 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
                   level="H"
                   includeMargin={false}
                   renderAs="canvas"
+                  bgColor="rgba(255,255,255,0)"
+                  fgColor="#000000"
                 />
               </div>
             </div>
@@ -295,11 +338,11 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
             {/* Right: cert number + date */}
             <div
               style={{
-                textAlign: 'right',
+                textAlign: 'left',
                 fontSize: '12px',
                 color: '#1a1a1a',
                 lineHeight: 2,
-                paddingBottom: '6px',
+                paddingBottom: '4px',
               }}
             >
               <div>

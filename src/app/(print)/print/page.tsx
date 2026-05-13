@@ -18,9 +18,13 @@ export default function PrintPage({ searchParams }: PrintPageProps) {
   const [params, setParams] = useState<any>(null);
 
   useEffect(() => {
-    searchParams.then(p => {
-      setParams(p);
+    let active = true;
+    searchParams.then((resolvedParams) => {
+      if (active) setParams(resolvedParams);
     });
+    return () => {
+      active = false;
+    };
   }, [searchParams]);
 
   if (!params) {

@@ -18,11 +18,16 @@ export default function VerifyPage({ params }: VerifyPageProps) {
   const [certificateNumber, setCertificateNumber] = useState('');
 
   useEffect(() => {
-    params.then(p => {
-      setCertificateNumber(p.certificateNumber);
+    let active = true;
+    params.then((resolvedParams) => {
+      if (!active) return;
+      setCertificateNumber(resolvedParams.certificateNumber);
       // Fetch certificate from Firestore
-      fetchCertificate(p.certificateNumber);
+      fetchCertificate(resolvedParams.certificateNumber);
     });
+    return () => {
+      active = false;
+    };
   }, [params]);
 
   const fetchCertificate = async (certNumber: string) => {

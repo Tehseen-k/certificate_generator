@@ -50,7 +50,7 @@ export const GenerateStep = () => {
           ? {
               ...prev,
               currentUser: user.fullName,
-              completed: i,
+              completed,
             }
           : null
       );
@@ -94,6 +94,17 @@ export const GenerateStep = () => {
         const errorMsg = error instanceof Error ? error.message : 'Unknown error';
         errors.push(`${user.fullName}: ${errorMsg}`);
       }
+
+      setStatus((prev) =>
+        prev
+          ? {
+              ...prev,
+              completed,
+              failed: errors.length,
+              errors,
+            }
+          : null
+      );
     }
 
     setStatus((prev) =>
