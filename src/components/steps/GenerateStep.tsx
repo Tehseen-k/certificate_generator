@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { useCertificateStore } from '@/lib/store';
 import { generateCertificateNumber } from '@/lib/certificate-helpers';
+import { saveCertificateToFirestore } from '@/lib/firestore-service';
 
 interface GenerationStatus {
   total: number;
@@ -42,6 +43,7 @@ export const GenerateStep = () => {
     for (let i = 0; i < store.data.users.length; i++) {
       const user = store.data.users[i];
       const issueDate = user.issueDateOverride || store.data.globalIssueDate;
+      const courseName = user.courseName?.trim() || store.data.globalCourseName || 'IOSH Managing Safely';
 
       setStatus((prev) =>
         prev
@@ -63,6 +65,7 @@ export const GenerateStep = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             userName: user.fullName,
+            courseName,
             certificateNumber,
             issueDate,
             qrCodeValue,
@@ -84,8 +87,7 @@ export const GenerateStep = () => {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(downloadUrl);
 
-        // Save to Firestore (if integrated)
-        // await saveCertificateToFirestore(...)
+        await saveCertificateToFirestore(certificateNumber, user.fullName, courseName, issueDate, qrCodeValue);
 
         completed++;
       } catch (error) {

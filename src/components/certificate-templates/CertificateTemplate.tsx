@@ -5,94 +5,311 @@ import QRCode from 'qrcode.react';
 
 interface CertificateTemplateProps {
   userName: string;
+  courseName: string;
   certificateNumber: string;
   issueDate: string;
   qrCodeValue: string;
 }
 
+function formatIssueDate(issueDate: string): string {
+  const parsed =
+    /^\d{4}-\d{2}-\d{2}$/.test(issueDate)
+      ? new Date(`${issueDate}T00:00:00`)
+      : new Date(issueDate);
+  if (Number.isNaN(parsed.getTime())) return issueDate;
+  return parsed.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
 export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateTemplateProps>(
-  ({ userName, certificateNumber, issueDate, qrCodeValue }, ref) => {
+  ({ userName, courseName, certificateNumber, issueDate, qrCodeValue }, ref) => {
+    const issuedDateText = formatIssueDate(issueDate);
+
     return (
       <div
         ref={ref}
-        className="relative w-full h-screen bg-white overflow-hidden print:h-auto"
         style={{
+          width: '210mm',
+          height: '260mm',
+          position: 'relative',
+          boxSizing: 'border-box',
+          overflow: 'hidden',
+          margin: 0,
+          padding: 0,
+          fontFamily: 'Georgia, "Times New Roman", serif',
+          color: '#1a1a1a',
           backgroundImage: 'url(/certificate-bg.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
-        {/* Certificate Layout */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-16">
-          {/* Top Logo */}
-          <div className="absolute top-8 right-8 w-24 h-24">
-            <img src="/logos/2.png" alt="Top Logo" className="w-full h-full object-contain" />
-          </div>
+        {/* Single blue border with margin from edge */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: '12px',
+            border: '2px solid #6bc8dc',
+            boxSizing: 'border-box',
+            pointerEvents: 'none',
+            zIndex: 10,
+          }}
+        />
 
-          {/* IOSH Logo */}
-          <div className="absolute top-8 left-8 w-24 h-24">
-            <img src="/logos/1.png" alt="IOSH Logo" className="w-full h-full object-contain" />
-          </div>
+        {/* ── ALL CONTENT inside border padding ── */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '22px',
+            left: '22px',
+            right: '22px',
+            bottom: '22px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            boxSizing: 'border-box',
+          }}
+        >
+          {/* IOSH Crest — bigger */}
+          <img
+            src="/logos/2.png"
+            alt="IOSH Crest"
+            style={{
+              height: '230px',
+              objectFit: 'contain',
+              display: 'block',
+              marginTop: '6px',
+            }}
+          />
 
-          {/* Certificate Title */}
-          <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold text-indigo-900 mb-2">CERTIFICATE</h1>
-            <p className="text-2xl text-indigo-700 font-semibold">of Achievement</p>
-          </div>
-
-          {/* "This is to certify" text */}
-          <p className="text-center text-lg text-gray-700 mb-8">This is to certify that</p>
-
-          {/* Name */}
-          <div className="text-center mb-12 border-b-4 border-indigo-900 pb-4 w-3/4">
-            <p className="text-4xl font-bold text-indigo-900">{userName}</p>
-          </div>
-
-          {/* Main Certificate Text */}
-          <p className="text-center text-lg text-gray-700 mb-6 max-w-2xl">
-            has successfully completed the training course in
-            <br />
-            <span className="font-bold text-xl text-indigo-900">IOSH Managing Safely</span>
+          {/* "This is a certificate awarded to" */}
+          <p style={{ margin: '24px 0 0', fontSize: '16px', textAlign: 'center', lineHeight: 1.5 }}>
+            This is a certificate awarded to
           </p>
 
-          {/* Date and Certificate Number */}
-          <div className="flex justify-between w-full max-w-2xl mb-16 text-gray-700">
-            <div className="text-center">
-              <p className="text-sm mb-2">Issue Date</p>
-              <p className="text-lg font-semibold">{issueDate}</p>
+          {/* Recipient Name */}
+          <p
+            style={{
+              margin: '8px 0 0',
+              fontSize: '32px',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              lineHeight: 1.2,
+              maxWidth: '90%',
+              wordBreak: 'break-word',
+            }}
+          >
+            {userName}
+          </p>
+
+          {/* "on successfully completing" */}
+          <p style={{ margin: '20px 0 0', fontSize: '16px', textAlign: 'center', lineHeight: 1.5 }}>
+            on successfully completing
+          </p>
+
+          {/* Course Name */}
+          <p
+            style={{
+              margin: '8px 0 0',
+              fontSize: '30px',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              lineHeight: 1.2,
+              maxWidth: '90%',
+              wordBreak: 'break-word',
+            }}
+          >
+            {courseName}
+          </p>
+
+          {/* "a course approved and validated by the" */}
+          <p style={{ margin: '20px 0 0', fontSize: '16px', textAlign: 'center', lineHeight: 1.5 }}>
+            a course approved and validated by the
+          </p>
+
+          {/* Institution name */}
+          <p
+            style={{
+              margin: '8px 0 0',
+              fontSize: '22px',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              lineHeight: 1.3,
+              maxWidth: '75%',
+            }}
+          >
+            Institution of Occupational Safety and Health
+          </p>
+
+          {/* "in association with" */}
+          <p style={{ margin: '20px 0 0', fontSize: '16px', textAlign: 'center', lineHeight: 1.5 }}>
+            in association with
+          </p>
+
+          {/* Kaspar line */}
+          <p style={{ margin: '8px 0 0', fontSize: '16px', textAlign: 'center', lineHeight: 1.4 }}>
+            Kaspar International Training Services Private Ltd
+          </p>
+
+          {/* Approved Centre */}
+          <p
+            style={{
+              margin: '3px 0 0',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              fontStyle: 'italic',
+              textAlign: 'center',
+            }}
+          >
+            Approved Centre: 5264
+          </p>
+
+          {/* ── Signature block: IOSH logo LEFT | signatures CENTERED in remaining space ── */}
+          <div
+            style={{
+              marginTop: '22px',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'flex-start',
+              flexShrink: 0,
+            }}
+          >
+            {/* Left: IOSH circular logo */}
+            <div
+              style={{
+                width: '105px',
+                flexShrink: 0,
+                display: 'flex',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+                paddingTop: '36px',
+              }}
+            >
+              <img
+                src="/logos/1.png"
+                alt="IOSH Logo"
+                style={{ width: '90px', objectFit: 'contain' }}
+              />
             </div>
-            <div className="text-center">
-              <p className="text-sm mb-2">Certificate Number</p>
-              <p className="text-lg font-semibold">{certificateNumber}</p>
+
+            {/* Center: fully centered signature block */}
+            <div
+              style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <p style={{ margin: '0', fontSize: '14px', textAlign: 'center', lineHeight: 1.5 }}>
+                Signed on behalf of IOSH
+              </p>
+
+              {/* Chief Executive Signature */}
+              <img
+                src="/logos/5.png"
+                alt="Chief Executive Signature"
+                style={{
+                  height: '120px',
+                  objectFit: 'contain',
+                  marginTop: '0px',
+                  display: 'block',
+                }}
+              />
+              <p style={{ margin: '0px 0 0', fontSize: '14px', textAlign: 'center' }}>
+                Chief Executive
+              </p>
+
+              {/* Course Organiser Signature */}
+              <img
+                src="/logos/4.png"
+                alt="Course Organiser Signature"
+                style={{
+                  height: '120px',
+                  objectFit: 'contain',
+                  marginTop: '0px',
+                  display: 'block',
+                }}
+              />
+              <p style={{ margin: '0px 0 0', fontSize: '14px', textAlign: 'center' }}>
+                Course Organiser
+              </p>
             </div>
+
+            {/* Right spacer to balance the IOSH logo on the left */}
+            <div style={{ width: '105px', flexShrink: 0 }} />
           </div>
 
-          {/* Signatures and QR Code */}
-          <div className="flex justify-between items-end w-full max-w-4xl">
-            {/* Signature 1 */}
-            <div className="text-center">
-              <img src="/logos/4.png" alt="Signature 1" className="w-32 h-16 object-contain mb-2" />
-              <p className="text-sm text-gray-700 border-t border-gray-400 pt-2">Authorized Signatory 1</p>
-            </div>
-
-            {/* QR Code Center */}
-            <div className="text-center">
-              <div className="mb-4 bg-white p-4 rounded">
+          {/* ── FOOTER: QR bottom-left, cert info bottom-right ── */}
+          <div
+            style={{
+              marginTop: 'auto',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'flex-end',
+              justifyContent: 'space-between',
+              paddingBottom: '4px',
+              boxSizing: 'border-box',
+            }}
+          >
+            {/* Left: QR in SmartVerify frame */}
+            <div style={{ position: 'relative', width: '90px', height: '90px', flexShrink: 0 }}>
+              <img
+                src="/logos/3.png"
+                alt="SmartVerify frame"
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'fill',
+                  zIndex: 1,
+                }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: '18px',
+                  zIndex: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: 'white',
+                }}
+              >
                 <QRCode
                   value={qrCodeValue}
-                  size={100}
+                  size={52}
                   level="H"
-                  includeMargin={true}
+                  includeMargin={false}
                   renderAs="canvas"
                 />
               </div>
-              <img src="/logos/3.png" alt="QR Logo" className="w-16 h-16 object-contain mx-auto" />
             </div>
 
-            {/* Signature 2 */}
-            <div className="text-center">
-              <img src="/logos/5.png" alt="Signature 2" className="w-32 h-16 object-contain mb-2" />
-              <p className="text-sm text-gray-700 border-t border-gray-400 pt-2">Authorized Signatory 2</p>
+            {/* Right: cert number + date */}
+            <div
+              style={{
+                textAlign: 'right',
+                fontSize: '12px',
+                color: '#1a1a1a',
+                lineHeight: 2,
+                paddingBottom: '6px',
+              }}
+            >
+              <div>
+                <span style={{ fontWeight: 600 }}>IOSH certificate number:</span>{' '}
+                {certificateNumber}
+              </div>
+              <div>
+                <span style={{ fontWeight: 600 }}>Issued Date:</span>{' '}
+                {issuedDateText}
+              </div>
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { CertificateTemplate } from '@/components/certificate-templates/CertificateTemplate';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { getCertificateByNumber } from '@/lib/firestore-service';
 
 interface VerifyPageProps {
   params: Promise<{
@@ -27,14 +28,14 @@ export default function VerifyPage({ params }: VerifyPageProps) {
   const fetchCertificate = async (certNumber: string) => {
     try {
       setLoading(true);
-      // TODO: Implement Firestore fetch
-      // For now, return mock data
-      setCertificate({
-        userName: 'John Doe',
-        certificateNumber: certNumber,
-        issueDate: '2026-05-12',
-        qrCodeValue: `https://example.com/verify/${certNumber}`,
-      });
+      const cert = await getCertificateByNumber(certNumber);
+      if (!cert) {
+        setCertificate(null);
+        setError('Certificate not found or unable to verify');
+        return;
+      }
+      setCertificate(cert);
+      setError('');
     } catch (err) {
       setError('Certificate not found or unable to verify');
     } finally {
@@ -92,6 +93,9 @@ export default function VerifyPage({ params }: VerifyPageProps) {
                 <strong>Certificate Number:</strong> {certificate.certificateNumber}
               </p>
               <p className="text-sm mt-2">
+                <strong>Course:</strong> {certificate.courseName || 'IOSH Managing Safely'}
+              </p>
+              <p className="text-sm mt-2">
                 <strong>Issue Date:</strong> {certificate.issueDate}
               </p>
             </CardContent>
@@ -101,9 +105,10 @@ export default function VerifyPage({ params }: VerifyPageProps) {
         <div className="bg-white rounded-lg shadow-lg p-8">
           <CertificateTemplate
             userName={certificate.userName}
+            courseName={certificate.courseName || 'IOSH Managing Safely'}
             certificateNumber={certificate.certificateNumber}
             issueDate={certificate.issueDate}
-            qrCodeValue={certificate.qrCodeValue}
+            qrCodeValue={`${window.location.origin}/verify/${certificate.certificateNumber}`}
           />
         </div>
       </div>

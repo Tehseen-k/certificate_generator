@@ -50,7 +50,7 @@ export default function Home() {
   };
 
   const canGoBack = store.currentStep > 1;
-  const canGoForward = store.currentStep < 4 && store.data.users.length > 0;
+  const canGoForward = store.currentStep < 4 && store.data && store.data.users && store.data.users.length > 0;
 
   const handleBack = () => {
     if (canGoBack) {

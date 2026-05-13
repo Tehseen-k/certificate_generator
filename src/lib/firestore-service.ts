@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { collection, addDoc, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import type { Certificate } from '@/types/certificate';
 
 /**
@@ -8,6 +8,7 @@ import type { Certificate } from '@/types/certificate';
 export async function saveCertificateToFirestore(
   certificateNumber: string,
   userName: string,
+  courseName: string,
   issueDate: string,
   qrCodeUrl: string
 ): Promise<string> {
@@ -16,7 +17,9 @@ export async function saveCertificateToFirestore(
     
     const docRef = await addDoc(certificatesRef, {
       certificateNumber,
+      userId: certificateNumber,
       userName,
+      courseName,
       issueDate,
       qrCodeUrl,
       createdAt: new Date(),

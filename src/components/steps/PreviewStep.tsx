@@ -14,9 +14,15 @@ export const PreviewStep = () => {
   const getIssueDate = (user: CertificateUser): string => {
     return user.issueDateOverride || store.data.globalIssueDate;
   };
+  const getCourseName = (user: CertificateUser): string => {
+    return user.courseName?.trim() || store.data.globalCourseName;
+  };
 
   const handleDateChange = (userId: string, date: string) => {
     store.updateUser(userId, { issueDateOverride: date });
+  };
+  const handleCourseChange = (userId: string, courseName: string) => {
+    store.updateUser(userId, { courseName: courseName.trim() || undefined });
   };
 
   return (
@@ -41,6 +47,18 @@ export const PreviewStep = () => {
             />
           </div>
 
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <label className="block text-sm font-semibold mb-3 text-blue-900">Global Course Name</label>
+            <p className="text-xs text-blue-700 mb-3">
+              Applied when a participant does not have an individual course set
+            </p>
+            <Input
+              value={store.data.globalCourseName}
+              onChange={(e) => store.setGlobalCourseName(e.target.value || 'IOSH Managing Safely')}
+              className="max-w-xl"
+            />
+          </div>
+
           {/* Participants Preview */}
           <div>
             <h3 className="text-sm font-semibold mb-4">Participants Certificate Details</h3>
@@ -56,12 +74,28 @@ export const PreviewStep = () => {
                         {index + 1}. {user.fullName}
                       </p>
                       <p className="text-xs text-slate-600">Date: {getIssueDate(user)}</p>
+                      <p className="text-xs text-slate-600">Course: {getCourseName(user)}</p>
                     </div>
                     <span className="text-slate-400">{expandedUser === user.id ? '▼' : '▶'}</span>
                   </button>
 
                   {expandedUser === user.id && (
                     <div className="border-t bg-slate-50 p-4 space-y-4">
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">Course Name</label>
+                        <Input
+                          value={user.courseName || ''}
+                          onChange={(e) => handleCourseChange(user.id, e.target.value)}
+                          className="max-w-xl"
+                          placeholder={`Leave empty to use global course: ${store.data.globalCourseName}`}
+                        />
+                        <p className="text-xs text-slate-600 mt-2">
+                          {user.courseName?.trim()
+                            ? `Using custom course: ${user.courseName}`
+                            : `Using global course: ${store.data.globalCourseName}`}
+                        </p>
+                      </div>
+
                       <div>
                         <label className="block text-sm font-semibold mb-2">Individual Issue Date Override</label>
                         <Input

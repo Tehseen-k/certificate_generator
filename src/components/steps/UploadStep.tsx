@@ -64,7 +64,7 @@ export const UploadStep = () => {
       <Card>
         <CardHeader>
           <CardTitle>Upload Participants List</CardTitle>
-          <CardDescription>Upload an Excel or TXT file containing participant names</CardDescription>
+          <CardDescription>Upload an Excel or TXT file containing participant names and optional course names</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Download Templates */}
@@ -72,7 +72,8 @@ export const UploadStep = () => {
             <h3 className="text-sm font-semibold mb-3">Download Sample Templates:</h3>
             <div className="flex gap-2">
               <Button
-                onClick={downloadExcelTemplate}
+                type="button"
+                onClick={() => downloadExcelTemplate().catch(() => {})}
                 variant="outline"
                 size="sm"
                 className="flex items-center gap-2"
@@ -144,7 +145,7 @@ export const UploadStep = () => {
           <div className="bg-blue-50 border border-blue-200 rounded p-4">
             <p className="text-sm text-blue-900">
               <strong>Tip:</strong> The system will intelligently detect names regardless of column names (name,
-              full name, first name, last name, etc.).
+              full name, first name, last name, etc.) and also detects course fields when available.
             </p>
           </div>
         </CardContent>

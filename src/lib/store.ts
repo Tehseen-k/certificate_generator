@@ -5,22 +5,19 @@ import type { CertificateState, CertificateUser, CertificateData } from '@/types
 const defaultData: CertificateData = {
   users: [],
   globalIssueDate: new Date().toISOString().split('T')[0],
+  globalCourseName: 'IOSH Managing Safely',
   templateId: 'default',
-};
-
-const defaultState: Omit<CertificateState, keyof typeof defaultData> = {
-  currentStep: 1,
-  selectedTemplate: 'default',
-  hasHydrated: false,
-  isGenerating: false,
-  generatedCount: 0,
 };
 
 export const useCertificateStore = create<CertificateState>()(
   persist(
     (set, get) => ({
-      ...defaultData,
-      ...defaultState,
+      data: defaultData,
+      currentStep: 1,
+      selectedTemplate: 'default',
+      hasHydrated: false,
+      isGenerating: false,
+      generatedCount: 0,
 
       updateUsers: (users) => set({ data: { ...get().data, users } }),
 
@@ -58,6 +55,14 @@ export const useCertificateStore = create<CertificateState>()(
           },
         }),
 
+      setGlobalCourseName: (courseName) =>
+        set({
+          data: {
+            ...get().data,
+            globalCourseName: courseName,
+          },
+        }),
+
       setStep: (step) => set({ currentStep: step }),
 
       setTemplate: (template) => set({ selectedTemplate: template }),
@@ -68,8 +73,11 @@ export const useCertificateStore = create<CertificateState>()(
 
       reset: () =>
         set({
-          ...defaultData,
-          ...defaultState,
+          data: defaultData,
+          currentStep: 1,
+          selectedTemplate: 'default',
+          isGenerating: false,
+          generatedCount: 0,
         }),
     }),
     {
