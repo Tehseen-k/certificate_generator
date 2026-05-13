@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { chromium } from 'playwright';
+import chromium from '@sparticuz/chromium';
+import playwright from 'playwright-core';
 
 export async function POST(request: NextRequest) {
   let browser;
@@ -21,9 +22,14 @@ export async function POST(request: NextRequest) {
     // Build the print page URL with certificate data
     const printUrl = `${baseUrl}/print?name=${encodeURIComponent(userName)}&courseName=${encodeURIComponent(courseName)}&certificateNumber=${certificateNumber}&issueDate=${issueDate}&qrCodeValue=${encodeURIComponent(qrCodeValue)}`;
 
+    // Optional: Determine if running locally
+    const isLocal = process.env.NODE_ENV === 'development';
+
     // Launch browser and generate PDF
-    browser = await chromium.launch({
-      headless: true,
+    browser = await playwright.chromium.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless as boolean | undefined,
     });
 
     const page = await browser.newPage({
