@@ -27,7 +27,18 @@ app.post('/generate-pdf', async (req, res) => {
   let page = null;
   try {
     const browser = await getBrowser();
-    const context = await browser.newContext();
+    const { bypassToken } = req.body;
+    
+    // Set up context with bypass headers if provided
+    const contextOptions = {};
+    const context = await browser.newContext(contextOptions);
+    
+    if (bypassToken) {
+      await context.setExtraHTTPHeaders({
+        'x-vercel-protection-bypass': bypassToken,
+      });
+    }
+    
     page = await context.newPage();
 
     // A4 Portrait

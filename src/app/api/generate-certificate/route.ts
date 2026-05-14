@@ -30,7 +30,10 @@ export async function POST(request: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ printUrl }),
+      body: JSON.stringify({ 
+        printUrl,
+        bypassToken: process.env.VERCEL_BYPASS_TOKEN 
+      }),
     });
 
     if (!response.ok) {
