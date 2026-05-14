@@ -7,11 +7,18 @@ app.use(express.json());
 let browserInstance = null;
 
 async function getBrowser() {
-  if (!browserInstance) {
+  if (!browserInstance || !browserInstance.isConnected()) {
+    if (browserInstance) {
+      await browserInstance.close().catch(() => {});
+    }
     browserInstance = await chromium.launch({
       headless: true,
-      // Optimized for low-memory environments like Render Free Tier (512MB)
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--single-process']
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+    });
+
+    browserInstance.on('disconnected', () => {
+      console.log('Browser disconnected, clearing instance');
+      browserInstance = null;
     });
   }
   return browserInstance;
@@ -45,7 +52,7 @@ app.post('/generate-pdf', async (req, res) => {
     await page.setViewportSize({ width: 794, height: 1123 });
     
     // Navigate to the Vercel-hosted print page
-    await page.goto(printUrl, { waitUntil: 'networkidle', timeout: 30000 });
+    await page.goto(printUrl, { waitUntil: 'load', timeout: 30000 });
 
     // Wait for QR code canvas if present
     await page.waitForFunction(() => {
