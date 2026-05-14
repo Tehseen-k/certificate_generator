@@ -170,7 +170,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           </p>
 
           {/* ── Signature block: IOSH logo LEFT | signatures CENTERED in remaining space ── */}
-                <div
+          <div
             style={{
               marginTop: '30px',
               width: '100%',
@@ -198,86 +198,85 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
             </div>
 
             {/* Center: fully centered signature block */}
-      {/* Center: fully centered signature block */}
-<div
-  style={{
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: 0,
-    margin: 0,
-    padding: 0,
-    lineHeight: 0,   // ← kills inline line-box gaps
-  }}
->
-  <p
-    style={{
-      margin: 0,
-      padding: 0,
-      fontSize: '16px',
-      textAlign: 'center',
-      lineHeight: 1,
-      display: 'block',
-    }}
-  >
-    Signed on behalf of IOSH
-  </p>
+            <div
+              style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 0,
+                margin: 0,
+                padding: 0,
+                lineHeight: 0,   // ← kills inline line-box gaps
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  fontSize: '16px',
+                  textAlign: 'center',
+                  lineHeight: 1,
+                  display: 'block',
+                }}
+              >
+                Signed on behalf of IOSH
+              </p>
 
-  <img
-    src="/logos/5.png"
-    alt="Chief Executive Signature"
-    style={{
-      height: '150px',
-      display: 'block',       // ← removes inline baseline gap
-      objectFit: 'contain',
-      margin: '-45px 0',      // ← eat the PNG's internal whitespace top+bottom
-      padding: 0,
-    }}
-  />
+              <img
+                src="/logos/5.png"
+                alt="Chief Executive Signature"
+                style={{
+                  height: '150px',
+                  display: 'block',       // ← removes inline baseline gap
+                  objectFit: 'contain',
+                  margin: '-45px 0',      // ← eat the PNG's internal whitespace top+bottom
+                  padding: 0,
+                }}
+              />
 
-  <p
-    style={{
-      margin: 0,
-      padding: 0,
-      fontSize: '14px',
-      textAlign: 'center',
-      lineHeight: 1,
-      display: 'block',
-      position: 'relative',
-      zIndex: 1,
-    }}
-  >
-    Chief Executive
-  </p>
+              <p
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  fontSize: '14px',
+                  textAlign: 'center',
+                  lineHeight: 1,
+                  display: 'block',
+                  position: 'relative',
+                  zIndex: 1,
+                }}
+              >
+                Chief Executive
+              </p>
 
-  <img
-    src="/logos/4.png"
-    alt="Course Organiser Signature"
-    style={{
-      height: '150px',
-      display: 'block',       // ← removes inline baseline gap
-      objectFit: 'contain',
-      margin: '-25px 0',      // ← eat the PNG's internal whitespace top+bottom
-      padding: 0,
-    }}
-  />
+              <img
+                src="/logos/4.png"
+                alt="Course Organiser Signature"
+                style={{
+                  height: '150px',
+                  display: 'block',       // ← removes inline baseline gap
+                  objectFit: 'contain',
+                  margin: '-25px 0',      // ← eat the PNG's internal whitespace top+bottom
+                  padding: 0,
+                }}
+              />
 
-  <p
-    style={{
-      margin: 0,
-      padding: 0,
-      fontSize: '14px',
-      textAlign: 'center',
-      lineHeight: 1,
-      display: 'block',
-      position: 'relative',
-      zIndex: 1,
-    }}
-  >
-    Course Organiser
-  </p>
-</div>
+              <p
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  fontSize: '14px',
+                  textAlign: 'center',
+                  lineHeight: 1,
+                  display: 'block',
+                  position: 'relative',
+                  zIndex: 1,
+                }}
+              >
+                Course Organiser
+              </p>
+            </div>
 
             {/* Right spacer to balance the IOSH logo on the left */}
             <div style={{ width: '105px', flexShrink: 0 }} />

@@ -10,8 +10,8 @@ RUN npm install --production
 # Copy source code
 COPY . .
 
-# Expose the Express port
-EXPOSE 8080
+# Expose the Hugging Face default port
+EXPOSE 7860
 
 # Start the server
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
