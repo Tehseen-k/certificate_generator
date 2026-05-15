@@ -54,10 +54,10 @@ app.post('/generate-pdf', async (req, res) => {
     // Navigate to the Vercel-hosted print page
     await page.goto(printUrl, { waitUntil: 'load', timeout: 30000 });
 
-    // Wait for QR code canvas if present
+    // Wait for QR code SVG if present
     await page.waitForFunction(() => {
-      const canvas = document.querySelector('canvas');
-      return !canvas || canvas.width > 0;
+      const svg = document.querySelector('svg');
+      return !svg || svg.getBBox().width > 0;
     }, { timeout: 5000 }).catch(() => {});
     
     await page.waitForTimeout(500);

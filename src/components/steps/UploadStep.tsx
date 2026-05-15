@@ -5,7 +5,7 @@ import { Upload, FileText, X, CheckCircle, Sparkles, Users, FileSpreadsheet, Fil
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useCertificateStore } from '@/lib/store';
-import { parseFile, removeDuplicates } from '@/lib/certificate-helpers';
+import { parseFile, removeDuplicates, parseTextContent } from '@/lib/certificate-helpers';
 import { downloadExcelTemplate, downloadTxtTemplate } from '@/lib/template-helpers';
 
 export const UploadStep = () => {
@@ -14,6 +14,8 @@ export const UploadStep = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [mode, setMode] = useState<'upload' | 'paste'>('upload');
+  const [pastedText, setPastedText] = useState('');
 
   const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -61,6 +63,38 @@ export const UploadStep = () => {
       setIsLoading(false);
     }
   };
+  const handlePasteSubmit = () => {
+    if (!pastedText.trim()) {
+      setError('Please paste some text first');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const users = parseTextContent(pastedText);
+
+      if (users.length === 0) {
+        setError('No names found in the text. Please check the format.');
+        setIsLoading(false);
+        return;
+      }
+
+      // Remove duplicates
+      const uniqueUsers = removeDuplicates(users);
+
+      // Update store
+      store.updateUsers(uniqueUsers);
+
+      // Move to next step
+      store.setStep(2);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to parse text');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const getFileIcon = (fileName: string) => {
     const extension = fileName.split('.').pop()?.toLowerCase();
@@ -102,84 +136,138 @@ export const UploadStep = () => {
               File Upload
             </CardTitle>
             <CardDescription>
-              Drag & drop or click to browse your participant list
+              {mode === 'upload' 
+                ? 'Drag & drop or click to browse your participant list' 
+                : 'Paste a list of names or data (one per line or CSV format)'}
             </CardDescription>
+            
+            <div className="flex p-1 bg-indigo-50/50 rounded-lg mt-4 max-w-[240px] mx-auto">
+              <button
+                onClick={() => setMode('upload')}
+                className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-sm font-medium rounded-md transition-all ${
+                  mode === 'upload' 
+                    ? 'bg-white text-indigo-600 shadow-sm' 
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <Upload className="w-3.5 h-3.5" />
+                Upload
+              </button>
+              <button
+                onClick={() => setMode('paste')}
+                className={`flex-1 flex items-center justify-center gap-2 py-1.5 text-sm font-medium rounded-md transition-all ${
+                  mode === 'paste' 
+                    ? 'bg-white text-indigo-600 shadow-sm' 
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <FileText className="w-3.5 h-3.5" />
+                Paste
+              </button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Drop Zone */}
-            <div
-              onDrop={handleDrop}
-              onDragOver={(e) => {
-                e.preventDefault();
-                setIsDragging(true);
-              }}
-              onDragLeave={() => setIsDragging(false)}
-              className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer ${
-                isDragging
-                  ? 'border-indigo-500 bg-indigo-50 scale-105 shadow-lg'
-                  : 'border-gray-300 hover:border-indigo-400 hover:bg-indigo-25'
-              } ${isLoading ? 'pointer-events-none opacity-50' : ''}`}
-            >
-              {isLoading ? (
-                <div className="space-y-4">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-                  <p className="text-lg font-semibold text-indigo-600">Processing file...</p>
-                  <p className="text-sm text-gray-600">This may take a few seconds</p>
-                </div>
-              ) : uploadedFile ? (
-                <div className="space-y-4">
-                  <div className="flex justify-center">
-                    {getFileIcon(uploadedFile.name)}
+            {mode === 'upload' ? (
+              /* Drop Zone */
+              <div
+                onDrop={handleDrop}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer ${
+                  isDragging
+                    ? 'border-indigo-500 bg-indigo-50 scale-105 shadow-lg'
+                    : 'border-gray-300 hover:border-indigo-400 hover:bg-indigo-25'
+                } ${isLoading ? 'pointer-events-none opacity-50' : ''}`}
+              >
+                {isLoading ? (
+                  <div className="space-y-4">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+                    <p className="text-lg font-semibold text-indigo-600">Processing file...</p>
+                    <p className="text-sm text-gray-600">This may take a few seconds</p>
                   </div>
-                  <div>
-                    <p className="text-lg font-semibold text-green-600 flex items-center justify-center gap-2">
-                      <CheckCircle className="w-5 h-5" />
-                      File Uploaded!
-                    </p>
-                    <p className="text-sm text-gray-600 truncate">{uploadedFile.name}</p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {(uploadedFile.size / 1024).toFixed(1)} KB
-                    </p>
+                ) : uploadedFile ? (
+                  <div className="space-y-4">
+                    <div className="flex justify-center">
+                      {getFileIcon(uploadedFile.name)}
+                    </div>
+                    <div>
+                      <p className="text-lg font-semibold text-green-600 flex items-center justify-center gap-2">
+                        <CheckCircle className="w-5 h-5" />
+                        File Uploaded!
+                      </p>
+                      <p className="text-sm text-gray-600 truncate">{uploadedFile.name}</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {(uploadedFile.size / 1024).toFixed(1)} KB
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-100 to-blue-100 rounded-full flex items-center justify-center">
-                    <Upload className="w-8 h-8 text-indigo-600" />
-                  </div>
-                  <div>
-                    <p className="text-lg font-semibold text-gray-900 mb-2">
-                      Drop your file here
-                    </p>
-                    <p className="text-sm text-gray-600 mb-4">
-                      or click to browse your computer
-                    </p>
-                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-100 to-blue-100 rounded-full flex items-center justify-center">
+                      <Upload className="w-8 h-8 text-indigo-600" />
+                    </div>
+                    <div>
+                      <p className="text-lg font-semibold text-gray-900 mb-2">
+                        Drop your file here
+                      </p>
+                      <p className="text-sm text-gray-600 mb-4">
+                        or click to browse your computer
+                      </p>
+                    </div>
 
-                  <input
-                    type="file"
-                    accept=".xlsx,.xls,.txt,.csv"
-                    onChange={handleFileInput}
-                    disabled={isLoading}
-                    className="hidden"
-                    id="file-input"
-                  />
-                  <label htmlFor="file-input">
-                    <Button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        document.getElementById('file-input')?.click();
-                      }}
+                    <input
+                      type="file"
+                      accept=".xlsx,.xls,.txt,.csv"
+                      onChange={handleFileInput}
                       disabled={isLoading}
-                      className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700"
-                    >
-                      Browse Files
-                    </Button>
-                  </label>
-                </div>
-              )}
-            </div>
+                      className="hidden"
+                      id="file-input"
+                    />
+                    <label htmlFor="file-input">
+                      <Button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          document.getElementById('file-input')?.click();
+                        }}
+                        disabled={isLoading}
+                        className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700"
+                      >
+                        Browse Files
+                      </Button>
+                    </label>
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* Paste Section */
+              <div className="space-y-4">
+                <textarea
+                  value={pastedText}
+                  onChange={(e) => setPastedText(e.target.value)}
+                  placeholder="John Doe&#10;Jane Smith, Safety Course&#10;Robert Brown: Managing Safely"
+                  className="w-full h-48 p-4 rounded-xl border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all resize-none font-mono text-sm"
+                  disabled={isLoading}
+                />
+                <Button
+                  onClick={handlePasteSubmit}
+                  disabled={isLoading || !pastedText.trim()}
+                  className="w-full bg-gradient-to-r from-indigo-600 to-blue-600"
+                >
+                  {isLoading ? (
+                    <>
+                      <Sparkles className="w-4 h-4 animate-spin mr-2" />
+                      Processing...
+                    </>
+                  ) : (
+                    'Process List'
+                  )}
+                </Button>
+              </div>
+            )}
 
             {/* Supported Formats */}
             <div className="bg-white rounded-lg p-4 border border-gray-200">

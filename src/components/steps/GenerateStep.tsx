@@ -57,7 +57,8 @@ export const GenerateStep = () => {
 
       try {
         const certificateNumber = generateCertificateNumber();
-        const qrCodeValue = `${window.location.origin}/verify/${certificateNumber}`;
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+        const qrCodeValue = `${baseUrl}/verify/${certificateNumber}`;
 
         // Call API to generate PDF
         const response = await fetch('/api/generate-certificate', {

@@ -113,7 +113,7 @@ export default function VerifyPage({ params }: VerifyPageProps) {
             courseName={certificate.courseName || 'IOSH Managing Safely'}
             certificateNumber={certificate.certificateNumber}
             issueDate={certificate.issueDate}
-            qrCodeValue={`${window.location.origin}/verify/${certificate.certificateNumber}`}
+            qrCodeValue={`${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/verify/${certificate.certificateNumber}`}
           />
         </div>
       </div>

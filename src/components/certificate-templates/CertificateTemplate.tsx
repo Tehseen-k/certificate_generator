@@ -318,17 +318,16 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: 'transparent',
-                  mixBlendMode: 'multiply',
+                  backgroundColor: '#ffffff',
                 }}
               >
                 <QRCode
                   value={qrCodeValue}
                   size={52}
-                  level="H"
+                  level="M"
                   includeMargin={false}
-                  renderAs="canvas"
-                  bgColor="rgba(255,255,255,0)"
+                  renderAs="svg"
+                  bgColor="#ffffff"
                   fgColor="#000000"
                 />
               </div>

@@ -267,6 +267,7 @@ function detectDelimiter(line: string): string | null {
   if (line.includes('\t')) return '\t';
   if (line.includes('|')) return '|';
   if (line.includes(',')) return ',';
+  if (line.includes(':')) return ':';
   return null;
 }
 
@@ -402,8 +403,10 @@ function parseLooseLines(lines: string[]): CertificateUser[] {
   return users;
 }
 
-export async function parseTextFile(file: File): Promise<CertificateUser[]> {
-  const text = await file.text();
+/**
+ * Parse text content and extract names
+ */
+export function parseTextContent(text: string): CertificateUser[] {
   const lines = text.split('\n').map((line) => line.replace(/\r$/, '')).filter((line) => line.trim());
 
   const delimited = parseDelimitedTableSection(lines);
@@ -414,6 +417,11 @@ export async function parseTextFile(file: File): Promise<CertificateUser[]> {
   const hasNotesBreak = lines.some((l) => /^---+$/u.test(l.trim()));
   const looseSource = hasNotesBreak ? linesBeforeNotesSeparator(lines) : lines;
   return parseLooseLines(looseSource);
+}
+
+export async function parseTextFile(file: File): Promise<CertificateUser[]> {
+  const text = await file.text();
+  return parseTextContent(text);
 }
 
 /**
