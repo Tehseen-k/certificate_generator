@@ -3,6 +3,8 @@ export interface CertificateUser {
   fullName: string;
   courseName?: string;
   issueDateOverride?: string; // Individual override date (YYYY-MM-DD)
+  certificateNumber?: string;
+  savedToFirebase?: boolean;
 }
 
 export interface CertificateData {

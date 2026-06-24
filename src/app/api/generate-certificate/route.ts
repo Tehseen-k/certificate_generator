@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     const printUrl = `${baseUrl}/print?name=${encodeURIComponent(userName)}&courseName=${encodeURIComponent(courseName)}&certificateNumber=${certificateNumber}&issueDate=${issueDate}&qrCodeValue=${encodeURIComponent(qrCodeValue)}`;
 
     // Call the external PDF Microservice (Render/Koyeb)
-    const PDF_SERVICE_URL = process.env.PDF_SERVICE_URL || 'http://localhost:8080/generate-pdf';
+    const PDF_SERVICE_URL = process.env.PDF_SERVICE_URL || 'https://itehseenk-certificate-generator.hf.space/generate-pdf';
     
     console.log('Generating PDF via:', PDF_SERVICE_URL);
     

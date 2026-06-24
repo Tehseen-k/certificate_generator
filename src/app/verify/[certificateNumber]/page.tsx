@@ -36,13 +36,13 @@ export default function VerifyPage({ params }: VerifyPageProps) {
       const cert = await getCertificateByNumber(certNumber);
       if (!cert) {
         setCertificate(null);
-        setError('Certificate not found or unable to verify');
+        setError('Certificate not yet generated. This certificate has not been saved and cannot be verified.');
         return;
       }
       setCertificate(cert);
       setError('');
     } catch (err) {
-      setError('Certificate not found or unable to verify');
+      setError('Certificate not yet generated. This certificate has not been saved and cannot be verified.');
     } finally {
       setLoading(false);
     }

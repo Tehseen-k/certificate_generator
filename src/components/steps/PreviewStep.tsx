@@ -5,7 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useCertificateStore } from '@/lib/store';
-import { generateCertificateNumber } from '@/lib/certificate-helpers';
+import {
+  buildQrCodeValue,
+  ensureCertificateNumber,
+  generateAndDownloadCertificate,
+} from '@/lib/certificate-generation';
 import type { CertificateUser } from '@/types/certificate';
 import { CertificateTemplate } from '@/components/certificate-templates/CertificateTemplate';
 import { Eye, Download, Calendar, BookOpen, User, CheckCircle, X } from 'lucide-react';
@@ -34,7 +38,7 @@ const Modal = ({ isOpen, onClose, title, children }: { isOpen: boolean; onClose:
 export const PreviewStep = () => {
   const store = useCertificateStore();
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
-  const [previewUser, setPreviewUser] = useState<CertificateUser | null>(null);
+  const [previewUserId, setPreviewUserId] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
@@ -54,39 +58,34 @@ export const PreviewStep = () => {
     store.updateUser(userId, { courseName: courseName.trim() || undefined });
   };
 
+  const openPreview = (user: CertificateUser) => {
+    ensureCertificateNumber(user, store.updateUser);
+    setPreviewUserId(user.id);
+    setShowPreviewModal(true);
+  };
+
+  const previewUser = previewUserId
+    ? store.data.users.find((u) => u.id === previewUserId) ?? null
+    : null;
+
   const generateIndividualCertificate = async (user: CertificateUser) => {
     setIsGenerating(true);
     try {
-      const certificateNumber = generateCertificateNumber();
-      const qrCodeValue = `${window.location.origin}/verify/${certificateNumber}`;
+      const certificateNumber = ensureCertificateNumber(user, store.updateUser);
       const issueDate = getIssueDate(user);
       const courseName = getCourseName(user);
 
-      const response = await fetch('/api/generate-certificate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userName: user.fullName,
-          courseName,
-          certificateNumber,
-          issueDate,
-          qrCodeValue,
-        }),
+      const result = await generateAndDownloadCertificate({
+        userName: user.fullName,
+        courseName,
+        certificateNumber,
+        issueDate,
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to generate certificate');
-      }
-
-      const blob = await response.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.download = `${certificateNumber}_${user.fullName.replace(/\s+/g, '_')}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(downloadUrl);
+      store.updateUser(user.id, {
+        certificateNumber: result.certificateNumber,
+        savedToFirebase: true,
+      });
     } catch (error) {
       console.error('Error generating certificate:', error);
       alert('Failed to generate certificate. Please try again.');
@@ -189,6 +188,9 @@ export const PreviewStep = () => {
                             <p className="font-semibold text-gray-900">{user.fullName}</p>
                             <p className="text-xs text-gray-600">
                               Date: {getIssueDate(user)} • Course: {getCourseName(user)}
+                              {user.certificateNumber && (
+                                <> • Cert: {user.certificateNumber}</>
+                              )}
                             </p>
                           </div>
                         </div>
@@ -196,10 +198,7 @@ export const PreviewStep = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => {
-                              setPreviewUser(user);
-                              setShowPreviewModal(true);
-                            }}
+                            onClick={() => openPreview(user)}
                             className="flex items-center gap-1"
                           >
                             <Eye className="w-3 h-3" />
@@ -269,15 +268,15 @@ export const PreviewStep = () => {
         onClose={() => setShowPreviewModal(false)}
         title={`Certificate Preview - ${previewUser?.fullName || ''}`}
       >
-        {previewUser && (
+        {previewUser && previewUser.certificateNumber && (
           <div>
             <div className="bg-white border rounded-lg p-4 shadow-sm">
               <CertificateTemplate
                 userName={previewUser.fullName}
                 courseName={getCourseName(previewUser)}
-                certificateNumber={`PREVIEW-${Date.now()}`}
+                certificateNumber={previewUser.certificateNumber}
                 issueDate={getIssueDate(previewUser)}
-                qrCodeValue={`${window.location.origin}/verify/preview`}
+                qrCodeValue={buildQrCodeValue(previewUser.certificateNumber)}
               />
             </div>
             <div className="flex justify-center mt-4">

@@ -39,7 +39,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           overflow: 'hidden',
           margin: 0,
           padding: 0,
-          fontFamily: 'Georgia, "Times New Roman", serif',
+          fontFamily: '"DejaVu Sans", sans-serif',
           color: '#1a1a1a',
           backgroundImage: 'url(/certificate-bg.jpg)',
           backgroundSize: 'cover',
@@ -80,7 +80,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
             src="/logos/2.png"
             alt="IOSH Crest"
             style={{
-              height: '200px',
+              height: '180px',
               objectFit: 'contain',
               display: 'block',
               marginTop: '6px',
@@ -95,7 +95,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           {/* Recipient Name */}
           <p
             style={{
-              margin: '20px 0 0',
+              margin: '15px 0 0',
               fontSize: '32px',
               fontWeight: 'bold',
               textAlign: 'center',
@@ -115,7 +115,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           {/* Course Name */}
           <p
             style={{
-              margin: '20px 0 0',
+              margin: '15px 0 0',
               fontSize: '30px',
               fontWeight: 'bold',
               textAlign: 'center',
@@ -135,7 +135,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           {/* Institution name */}
           <p
             style={{
-              margin: '20px 0 0',
+              margin: '15px 0 0',
               fontSize: '22px',
               fontWeight: 'bold',
               textAlign: 'center',
@@ -147,12 +147,12 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           </p>
 
           {/* "in association with" */}
-          <p style={{ margin: '20px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.5 }}>
+          <p style={{ margin: '10px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.5 }}>
             in association with
           </p>
 
           {/* Kaspar line */}
-          <p style={{ margin: '20px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.4 }}>
+          <p style={{ margin: '10px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.4 }}>
             Kaspar International Training Services Private Ltd
           </p>
 
@@ -173,6 +173,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           <div
             style={{
               marginTop: '30px',
+              marginBottom: '20px',
               width: '100%',
               display: 'flex',
               alignItems: 'flex-start',
@@ -182,7 +183,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
             {/* Left: IOSH circular logo */}
             <div
               style={{
-                width: '105px',
+                width: '120px',
                 flexShrink: 0,
                 display: 'flex',
                 justifyContent: 'flex-start',
@@ -193,7 +194,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
               <img
                 src="/logos/1.png"
                 alt="IOSH Logo"
-                style={{ width: '90px', objectFit: 'contain' }}
+                style={{ width: '120px', height: 'auto', objectFit: 'contain', display: 'block' }}
               />
             </div>
 
@@ -279,7 +280,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
             </div>
 
             {/* Right spacer to balance the IOSH logo on the left */}
-            <div style={{ width: '105px', flexShrink: 0 }} />
+            <div style={{ width: '120px', flexShrink: 0 }} />
           </div>
 
           {/* ── FOOTER: QR bottom-left, cert info bottom-right ── */}
@@ -290,6 +291,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
               display: 'flex',
               alignItems: 'flex-end',
               justifyContent: 'space-between',
+              paddingTop: '12px',
               paddingBottom: '24px',
               paddingLeft: '16px',
               paddingRight: '16px',
@@ -297,7 +299,16 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
             }}
           >
             {/* Left: QR in SmartVerify frame */}
-            <div style={{ position: 'relative', width: '90px', height: '90px', flexShrink: 0 }}>
+            <div
+              style={{
+                position: 'relative',
+                width: '90px',
+                height: '90px',
+                flexShrink: 0,
+                borderRadius: '12px',
+                overflow: 'hidden',
+              }}
+            >
               <img
                 src="/logos/3.png"
                 alt="SmartVerify frame"
@@ -310,20 +321,36 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
                   zIndex: 1,
                 }}
               />
+              {/* Rounded white background — overflow hidden clips only the white fill, not the QR */}
               <div
                 style={{
                   position: 'absolute',
-                  inset: '18px',
+                  top: '21px',
+                  left: '21px',
+                  right: '21px',
+                  bottom: '21px',
                   zIndex: 2,
+                  backgroundColor: '#ffffff',
+                  borderRadius: '9px',
+                }}
+              />
+              {/* QR code on its own layer — no clipping, always square */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '21px',
+                  left: '21px',
+                  right: '21px',
+                  bottom: '21px',
+                  zIndex: 3,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: '#ffffff',
                 }}
               >
                 <QRCode
                   value={qrCodeValue}
-                  size={52}
+                  size={48}
                   level="M"
                   includeMargin={false}
                   renderAs="svg"

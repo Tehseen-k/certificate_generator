@@ -1,3 +1,6 @@
+import '@fontsource/dejavu-sans/400.css';
+import '@fontsource/dejavu-sans/700.css';
+import '@fontsource/dejavu-sans/400-italic.css';
 import type { Metadata } from 'next';
 import './globals.css';
 

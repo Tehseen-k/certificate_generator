@@ -3,6 +3,32 @@ import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import type { Certificate } from '@/types/certificate';
 
 /**
+ * Save a certificate to Firestore only if it does not already exist.
+ * Returns whether a new record was created.
+ */
+export async function saveCertificateIfNotExists(
+  certificateNumber: string,
+  userName: string,
+  courseName: string,
+  issueDate: string,
+  qrCodeUrl: string
+): Promise<{ saved: boolean; docId: string }> {
+  const existing = await getCertificateByNumber(certificateNumber);
+  if (existing) {
+    return { saved: false, docId: existing.id };
+  }
+
+  const docId = await saveCertificateToFirestore(
+    certificateNumber,
+    userName,
+    courseName,
+    issueDate,
+    qrCodeUrl
+  );
+  return { saved: true, docId };
+}
+
+/**
  * Save a certificate to Firestore
  */
 export async function saveCertificateToFirestore(

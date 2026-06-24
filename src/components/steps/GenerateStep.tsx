@@ -5,8 +5,10 @@ import { Download, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useCertificateStore } from '@/lib/store';
-import { generateCertificateNumber } from '@/lib/certificate-helpers';
-import { saveCertificateToFirestore } from '@/lib/firestore-service';
+import {
+  ensureCertificateNumber,
+  generateAndDownloadCertificate,
+} from '@/lib/certificate-generation';
 
 interface GenerationStatus {
   total: number;
@@ -56,39 +58,19 @@ export const GenerateStep = () => {
       );
 
       try {
-        const certificateNumber = generateCertificateNumber();
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-        const qrCodeValue = `${baseUrl}/verify/${certificateNumber}`;
+        const certificateNumber = ensureCertificateNumber(user, store.updateUser);
 
-        // Call API to generate PDF
-        const response = await fetch('/api/generate-certificate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userName: user.fullName,
-            courseName,
-            certificateNumber,
-            issueDate,
-            qrCodeValue,
-          }),
+        await generateAndDownloadCertificate({
+          userName: user.fullName,
+          courseName,
+          certificateNumber,
+          issueDate,
         });
 
-        if (!response.ok) {
-          throw new Error(`Failed to generate certificate for ${user.fullName}`);
-        }
-
-        // Download the PDF
-        const blob = await response.blob();
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = `${certificateNumber}_${user.fullName.replace(/\s+/g, '_')}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(downloadUrl);
-
-        await saveCertificateToFirestore(certificateNumber, user.fullName, courseName, issueDate, qrCodeValue);
+        store.updateUser(user.id, {
+          certificateNumber,
+          savedToFirebase: true,
+        });
 
         completed++;
       } catch (error) {
@@ -150,6 +132,21 @@ export const GenerateStep = () => {
               </div>
             </div>
 
+            {/* Participant list with existing certificate numbers */}
+            {store.data.users.some((u) => u.certificateNumber) && (
+              <div className="bg-slate-50 border border-slate-200 rounded p-4">
+                <p className="font-semibold text-slate-900 text-sm mb-2">Certificate Numbers:</p>
+                <div className="space-y-1 max-h-32 overflow-y-auto">
+                  {store.data.users.map((user) => (
+                    <p key={user.id} className="text-xs text-slate-700">
+                      {user.fullName}: {user.certificateNumber || 'Not yet assigned'}
+                      {user.savedToFirebase && ' (saved)'}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Warning */}
             <div className="bg-amber-50 border border-amber-200 rounded p-4 flex gap-3">
               <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
@@ -157,6 +154,7 @@ export const GenerateStep = () => {
                 <p className="font-semibold text-amber-900 text-sm">Important Notes:</p>
                 <ul className="text-sm text-amber-800 mt-2 list-disc list-inside space-y-1">
                   <li>Each certificate will get a unique certificate number</li>
+                  <li>Certificates previewed earlier will keep their assigned numbers</li>
                   <li>QR codes will be embedded for verification</li>
                   <li>This may take a few minutes for large batches</li>
                   <li>Ensure all participant names are correct before proceeding</li>
@@ -256,7 +254,6 @@ export const GenerateStep = () => {
               </Button>
               <Button
                 onClick={() => {
-                  // Download as ZIP would be here if needed
                   alert('All certificates have been downloaded individually to your device');
                 }}
                 className="flex-1 flex items-center justify-center gap-2"
