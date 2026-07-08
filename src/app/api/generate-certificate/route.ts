@@ -12,27 +12,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get the base URL for the print page
+    // Print page must be served from the app subdomain (not the verify-only main domain)
     const baseUrl =
+      process.env.NEXT_PUBLIC_APP_URL ||
       process.env.NEXTAUTH_URL ||
       (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
-    // Build the print page URL with certificate data
     const printUrl = `${baseUrl}/print?name=${encodeURIComponent(userName)}&courseName=${encodeURIComponent(courseName)}&certificateNumber=${certificateNumber}&issueDate=${issueDate}&qrCodeValue=${encodeURIComponent(qrCodeValue)}`;
 
-    // Call the external PDF Microservice (Render/Koyeb)
-    const PDF_SERVICE_URL = process.env.PDF_SERVICE_URL || 'https://itehseenk-certificate-generator.hf.space/generate-pdf';
-    
-    console.log('Generating PDF via:', PDF_SERVICE_URL);
-    
+    const PDF_SERVICE_URL =
+      process.env.PDF_SERVICE_URL ||
+      'https://itehseenk-certificate-generator.hf.space/generate-pdf';
+
     const response = await fetch(PDF_SERVICE_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         printUrl,
-        bypassToken: process.env.VERCEL_BYPASS_TOKEN 
+        bypassToken: process.env.VERCEL_BYPASS_TOKEN,
       }),
     });
 
@@ -44,9 +41,8 @@ export async function POST(request: NextRequest) {
     const pdfBuffer = await response.arrayBuffer();
     const pdfBytes = new Uint8Array(pdfBuffer);
 
-    // Return PDF as binary file
     const filename = `${certificateNumber}_${userName.replace(/\s+/g, '_')}.pdf`;
-    
+
     return new Response(pdfBytes, {
       status: 200,
       headers: {
@@ -55,14 +51,16 @@ export async function POST(request: NextRequest) {
         'Content-Length': pdfBytes.byteLength.toString(),
       },
     });
-
   } catch (error) {
     console.error('Certificate generation error:', error);
-    
+
     return NextResponse.json(
-      { error: 'Failed to generate certificate: ' + (error instanceof Error ? error.message : 'Unknown error') },
+      {
+        error:
+          'Failed to generate certificate: ' +
+          (error instanceof Error ? error.message : 'Unknown error'),
+      },
       { status: 500 }
     );
   }
 }
-

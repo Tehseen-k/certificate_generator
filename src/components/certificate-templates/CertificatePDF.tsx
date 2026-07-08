@@ -196,7 +196,7 @@ export const CertificatePDF = ({
         <Text style={styles.subtitle}>in association with</Text>
         <Text style={styles.kaspar}>Kaspar International Training Services Private Ltd</Text>
         <Text style={styles.approvedCentre}>Approved Centre: 5264</Text>
-        
+
         <View style={styles.signatureSection}>
           <View style={styles.logoColumn}>
             <Image src={assetPaths.logo1} style={styles.ioshLogo} />
@@ -208,8 +208,8 @@ export const CertificatePDF = ({
               <Text style={styles.signatureLabel}>Chief Executive</Text>
             </View>
             <View style={styles.signatureItem}>
-               <Image src={assetPaths.logo4} style={styles.signatureImage} />
-               <Text style={styles.signatureLabel}>Course Organiser</Text>
+              <Image src={assetPaths.logo4} style={styles.signatureImage} />
+              <Text style={styles.signatureLabel}>Course Organiser</Text>
             </View>
           </View>
           <View style={styles.sideSpacer} />

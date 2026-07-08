@@ -9,8 +9,19 @@ export function getAppBaseUrl(): string {
   return process.env.NEXT_PUBLIC_APP_URL || '';
 }
 
+export function getVerifyBaseUrl(): string {
+  if (typeof window !== 'undefined') {
+    return (
+      process.env.NEXT_PUBLIC_VERIFY_URL ||
+      process.env.NEXT_PUBLIC_APP_URL ||
+      window.location.origin
+    );
+  }
+  return process.env.NEXT_PUBLIC_VERIFY_URL || process.env.NEXT_PUBLIC_APP_URL || '';
+}
+
 export function buildQrCodeValue(certificateNumber: string): string {
-  return `${getAppBaseUrl()}/verify/${certificateNumber}`;
+  return `${getVerifyBaseUrl()}/verify/${certificateNumber}`;
 }
 
 /**

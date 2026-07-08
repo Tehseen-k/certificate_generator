@@ -27,6 +27,10 @@ function formatIssueDate(issueDate: string): string {
 export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateTemplateProps>(
   ({ userName, courseName, certificateNumber, issueDate, qrCodeValue }, ref) => {
     const issuedDateText = formatIssueDate(issueDate);
+    const sideLogoSize = 130;
+    const qrFrameSize = 110;
+    const qrFramePadding = 21;
+    const qrCodeSize = 60;
 
     return (
       <div
@@ -80,7 +84,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
             src="/logos/2.png"
             alt="IOSH Crest"
             style={{
-              height: '180px',
+              height: '250px',
               objectFit: 'contain',
               display: 'block',
               marginTop: '6px',
@@ -121,7 +125,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
               textAlign: 'center',
               lineHeight: 1.2,
               maxWidth: '90%',
-              wordBreak: 'break-word',
+              wordBreak: 'break-word', 
             }}
           >
             {courseName}
@@ -147,12 +151,12 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           </p>
 
           {/* "in association with" */}
-          <p style={{ margin: '10px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.5 }}>
+          <p style={{ margin: '15px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.5 }}>
             in association with
           </p>
 
           {/* Kaspar line */}
-          <p style={{ margin: '10px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.4 }}>
+          <p style={{ margin: '15px 0 0', fontSize: '20px', textAlign: 'center', lineHeight: 1.4 }}>
             Kaspar International Training Services Private Ltd
           </p>
 
@@ -172,7 +176,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
           {/* ── Signature block: IOSH logo LEFT | signatures CENTERED in remaining space ── */}
           <div
             style={{
-              marginTop: '30px',
+              marginTop: '40px',
               marginBottom: '20px',
               width: '100%',
               display: 'flex',
@@ -183,18 +187,23 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
             {/* Left: IOSH circular logo */}
             <div
               style={{
-                width: '120px',
+                width: `${sideLogoSize}px`,
                 flexShrink: 0,
                 display: 'flex',
                 justifyContent: 'flex-start',
                 alignItems: 'center',
-                paddingTop: '150px',
+                paddingTop: '0px',
               }}
             >
               <img
                 src="/logos/1.png"
                 alt="IOSH Logo"
-                style={{ width: '120px', height: 'auto', objectFit: 'contain', display: 'block' }}
+                style={{
+                  width: `${sideLogoSize}px`,
+                  height: `${sideLogoSize}px`,
+                  objectFit: 'contain',
+                  display: 'block',
+                }}
               />
             </div>
 
@@ -228,17 +237,17 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
                 src="/logos/5.png"
                 alt="Chief Executive Signature"
                 style={{
-                  height: '150px',
+                  height: '250px',
                   display: 'block',       // ← removes inline baseline gap
                   objectFit: 'contain',
-                  margin: '-45px 0',      // ← eat the PNG's internal whitespace top+bottom
+                  margin: '-102px 0',      // ← eat the PNG's internal whitespace top+bottom
                   padding: 0,
                 }}
               />
 
               <p
                 style={{
-                  margin: 0,
+                  margin: 10,
                   padding: 0,
                   fontSize: '14px',
                   textAlign: 'center',
@@ -255,10 +264,10 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
                 src="/logos/4.png"
                 alt="Course Organiser Signature"
                 style={{
-                  height: '150px',
+                  height: '200px',
                   display: 'block',       // ← removes inline baseline gap
                   objectFit: 'contain',
-                  margin: '-25px 0',      // ← eat the PNG's internal whitespace top+bottom
+                  margin: '-50px 0',      // ← eat the PNG's internal whitespace top+bottom
                   padding: 0,
                 }}
               />
@@ -280,19 +289,19 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
             </div>
 
             {/* Right spacer to balance the IOSH logo on the left */}
-            <div style={{ width: '120px', flexShrink: 0 }} />
+            <div style={{ width: `${sideLogoSize}px`, flexShrink: 0 }} />
           </div>
 
           {/* ── FOOTER: QR bottom-left, cert info bottom-right ── */}
           <div
             style={{
-              marginTop: 'auto',
+              marginTop: '-30px',
               width: '100%',
               display: 'flex',
               alignItems: 'flex-end',
               justifyContent: 'space-between',
               paddingTop: '12px',
-              paddingBottom: '24px',
+              paddingBottom: '0px',
               paddingLeft: '16px',
               paddingRight: '16px',
               boxSizing: 'border-box',
@@ -302,8 +311,8 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
             <div
               style={{
                 position: 'relative',
-                width: '90px',
-                height: '90px',
+                width: `${qrFrameSize}px`,
+                height: `${qrFrameSize}px`,
                 flexShrink: 0,
                 borderRadius: '12px',
                 overflow: 'hidden',
@@ -325,10 +334,10 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
               <div
                 style={{
                   position: 'absolute',
-                  top: '21px',
-                  left: '21px',
-                  right: '21px',
-                  bottom: '21px',
+                  top: `${qrFramePadding}px`,
+                  left: `${qrFramePadding}px`,
+                  right: `${qrFramePadding}px`,
+                  bottom: `${qrFramePadding}px`,
                   zIndex: 2,
                   backgroundColor: '#ffffff',
                   borderRadius: '9px',
@@ -338,10 +347,10 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
               <div
                 style={{
                   position: 'absolute',
-                  top: '21px',
-                  left: '21px',
-                  right: '21px',
-                  bottom: '21px',
+                  top: `${qrFramePadding}px`,
+                  left: `${qrFramePadding}px`,
+                  right: `${qrFramePadding}px`,
+                  bottom: `${qrFramePadding}px`,
                   zIndex: 3,
                   display: 'flex',
                   alignItems: 'center',
@@ -350,7 +359,7 @@ export const CertificateTemplate = React.forwardRef<HTMLDivElement, CertificateT
               >
                 <QRCode
                   value={qrCodeValue}
-                  size={48}
+                  size={qrCodeSize}
                   level="M"
                   includeMargin={false}
                   renderAs="svg"
