@@ -38,26 +38,12 @@ function VerifyHeader({ userName, issueDate }: { userName: string; issueDate: st
         </div>
 
         {/* Right: Smart Verify+ */}
-        <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5 sm:gap-2">
-          <svg
-            className="h-9 w-9 shrink-0 sm:h-10 sm:w-10 md:h-11 md:w-11"
-            viewBox="0 0 44 44"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden
-          >
-            <rect x="6" y="4" width="32" height="36" rx="4" fill="#e8f4fd" stroke="#38b6d8" strokeWidth="2" />
-            <rect x="10" y="10" width="24" height="3" rx="1.5" fill="#38b6d8" />
-            <rect x="10" y="16" width="18" height="2.5" rx="1.25" fill="#c5e4f0" />
-            <rect x="10" y="21" width="20" height="2.5" rx="1.25" fill="#c5e4f0" />
-            <circle cx="30" cy="30" r="9" fill="#3b2a8c" />
-            <path d="M26 30l3 3 5-5" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <div className="min-w-0 truncate leading-tight whitespace-nowrap">
-            <span className="text-sm font-extrabold text-[#1e1656] sm:text-lg md:text-[22px]">Smart</span>
-            <span className="text-sm font-extrabold text-[#38b6d8] sm:text-lg md:text-[22px]">Verify</span>
-            <span className="text-sm font-extrabold text-[#38b6d8] sm:text-lg md:text-[22px]">+</span>
-          </div>
+        <div className="flex min-w-0 flex-1 items-center justify-end">
+          <img
+            src="/logos/smart-verify.png"
+            alt="Smart Verify+"
+            className="h-9 w-auto shrink-0 object-contain sm:h-11 md:h-[52px]"
+          />
         </div>
       </div>
 
@@ -151,8 +137,13 @@ export default function VerifyPage({ params }: VerifyPageProps) {
       }
       setCertificate(cert);
       setError('');
-    } catch {
-      setError('Certificate not yet generated. This certificate has not been saved and cannot be verified.');
+    } catch (err) {
+      setCertificate(null);
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Could not reach Firebase. Check your internet connection and try again.'
+      );
     } finally {
       setLoading(false);
     }
